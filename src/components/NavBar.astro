@@ -1,0 +1,77 @@
+---
+const navLinks = [
+    { href: '/', text: 'Home' },
+    { href: '/projects', text: 'Projects' },
+    { href: '/photos', text: 'Photos' },
+]
+---
+<nav class="bg-light-gray/80 dark:bg-navy/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/50 dark:border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <a href="/" class="text-accent-red font-bold text-xl tracking-wider">TBM</a>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    {navLinks.map(link => (
+                        <a 
+                            href={link.href} 
+                            class:list={[
+                                "text-navy dark:text-white hover:text-accent-red dark:hover:text-accent-red px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                { 'text-accent-red': Astro.url.pathname === link.href }
+                            ]}
+                        >
+                            {link.text}
+                        </a>
+                    ))}
+                </div>
+            </div>
+            <div class="-mr-2 flex md:hidden">
+                <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-navy dark:text-white hover:text-accent-red focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg id="menu-open-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="menu-close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden md:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navLinks.map(link => (
+                <a 
+                    href={link.href} 
+                    class:list={[
+                        "text-navy dark:text-white hover:text-accent-red dark:hover:text-accent-red block px-3 py-2 rounded-md text-base font-medium transition-colors",
+                        { 'bg-accent-red text-white': Astro.url.pathname === link.href }
+                    ]}
+                >
+                    {link.text}
+                </a>
+            ))}
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-open-icon');
+        const closeIcon = document.getElementById('menu-close-icon');
+
+        if (btn && menu && openIcon && closeIcon) {
+            btn.addEventListener('click', () => {
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', !isExpanded + '');
+                menu.classList.toggle('hidden');
+                openIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+        }
+    });
+</script>

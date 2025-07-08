@@ -1,0 +1,36 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+const projects = [
+    { name: 'Pi Lab', description: 'An IoT project for monitoring Raspberry Pi clusters and home automation.', link: 'https://github.com/mammy07/pi-lab' },
+    { name: 'Kismet', description: 'A web app for discovering new music based on your current mood and listening history.', link: 'https://github.com/mammy07/kismet' },
+    { name: 'Portfolio v1', description: 'The first version of my personal site, built with vanilla HTML, CSS, and JS.', link: 'https://github.com/mammy07/portfolio-v1' },
+    { name: 'Data Visualizer', description: 'A tool for creating interactive charts and graphs from CSV data.', link: 'https://github.com/mammy07/data-visualizer' },
+];
+---
+
+<Layout title="Projects | TechByMammy" description="A showcase of my recent projects and work.">
+    <div class="bg-light-gray dark:bg-navy/40">
+        <div class="container mx-auto px-4 py-16">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl lg:text-5xl font-bold">My Projects</h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">A selection of my favorite work.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {projects.map((project, index) => (
+                    <div class="bg-white dark:bg-navy rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col" style={`animation-delay: ${index * 150}ms`}>
+                        <div class="p-6 flex-grow">
+                            <h3 class="text-2xl font-bold mb-2 text-navy dark:text-white">{project.name}</h3>
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">{project.description}</p>
+                        </div>
+                        <div class="p-6 bg-gray-50 dark:bg-navy/50 rounded-b-lg">
+                            <a href={project.link} target="_blank" rel="noopener noreferrer" class="font-semibold text-accent-red hover:underline">
+                                View on GitHub &rarr;
+                            </a>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</Layout>

@@ -1,0 +1,107 @@
+---
+interface Photo {
+    src: string;
+    alt: string;
+}
+const { photos }: { photos: Photo[] } = Astro.props;
+---
+
+<div class="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+    {photos.map((photo, index) => (
+        <div class="overflow-hidden rounded-lg shadow-md break-inside-avoid">
+            <img 
+                src={photo.src} 
+                alt={photo.alt} 
+                loading="lazy"
+                class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                data-gallery-item={index}
+            />
+        </div>
+    ))}
+</div>
+
+<!-- Modal -->
+<div id="gallery-modal" class="fixed inset-0 bg-black/90 z-[100] hidden items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <button id="modal-close" class="absolute top-4 right-6 text-white text-5xl font-bold hover:text-accent-red transition-colors">&times;</button>
+    <button id="modal-prev" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white text-5xl font-bold hover:text-accent-red transition-colors">&#8249;</button>
+    <button id="modal-next" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white text-5xl font-bold hover:text-accent-red transition-colors">&#8250;</button>
+    <div class="relative">
+        <img id="modal-image" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl">
+        <p id="modal-caption" class="text-center text-white/80 mt-4 text-lg"></p>
+    </div>
+</div>
+
+<script define:vars={{ photos }}>
+    document.addEventListener('DOMContentLoaded', () => {
+        const galleryItems = document.querySelectorAll('[data-gallery-item]');
+        const modal = document.getElementById('gallery-modal');
+        const modalImg = document.getElementById('modal-image');
+        const modalCaption = document.getElementById('modal-caption');
+        const closeModalBtn = document.getElementById('modal-close');
+        const prevBtn = document.getElementById('modal-prev');
+        const nextBtn = document.getElementById('modal-next');
+
+        if (!modal || !modalImg || !closeModalBtn || !prevBtn || !nextBtn || !modalCaption) return;
+
+        let currentIndex = 0;
+
+        const showModal = (index) => {
+            currentIndex = parseInt(index);
+            modalImg.src = photos[currentIndex].src;
+            modalImg.alt = photos[currentIndex].alt;
+            modalCaption.textContent = photos[currentIndex].alt;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const hideModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        };
+
+        const showPrev = () => {
+            currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+            updateModalContent();
+        };
+
+        const showNext = () => {
+            currentIndex = (currentIndex + 1) % photos.length;
+            updateModalContent();
+        };
+        
+        const updateModalContent = () => {
+            modalImg.style.opacity = '0';
+            setTimeout(() => {
+                modalImg.src = photos[currentIndex].src;
+                modalImg.alt = photos[currentIndex].alt;
+                modalCaption.textContent = photos[currentIndex].alt;
+                modalImg.style.opacity = '1';
+            }, 150);
+        }
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                showModal(item.getAttribute('data-gallery-item'));
+            });
+        });
+
+        closeModalBtn.addEventListener('click', hideModal);
+        prevBtn.addEventListener('click', showPrev);
+        nextBtn.addEventListener('click', showNext);
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('hidden')) return;
+            if (e.key === 'Escape') hideModal();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+    });
+</script>
